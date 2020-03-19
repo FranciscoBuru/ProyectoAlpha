@@ -29,14 +29,20 @@ import java.rmi.RemoteException;
 public class  Partida implements LoginPartida  {
     
     public boolean finJuago;
+    public boolean enCurso;
     public ArrayList<Jugador> jugadores;
     public String ultima;
+    Administrador adm;
 
     public Partida() {
-        finJuago = false;
+        finJuago = true;
+        enCurso = false;
         this.jugadores = new  ArrayList<Jugador>();
     }
-    
+
+    public void setAdm(Administrador adm) {
+        this.adm = adm;
+    }
     
     //Se supone que revisa si la partida ya terminó
     //(Que loos jugadores que estan logged ya estén listos para jugar)
@@ -79,7 +85,7 @@ public class  Partida implements LoginPartida  {
         }
         if(existe && !jugadores.get(i-1).isEnJuego()){
             jugadores.get(i-1).setEnJuego(true);
-            return new Conex(IDPlayer,jugadores.get(i-1).getPuntos(), 7899, "localhost", 6791, "228.5.6.7");  
+            return new Conex(IDPlayer,jugadores.get(i-1).getPuntos(), 7899, "localhost", 6791, "228.5.6.7", adm.arreMon);  
         }else if(existe){
             return new Conex(null);
         }else{
@@ -126,6 +132,7 @@ public class  Partida implements LoginPartida  {
     //listos para iniciar partida
     public void inicioPartida() {
         limpiaRonda();
+        enCurso = true;
         int num = jugadores.size();
         for(int i = 0; i < num ; i++){
             jugadores.get(i).setAcabo(false);
@@ -137,6 +144,23 @@ public class  Partida implements LoginPartida  {
             }
         }
         
+    }
+
+    @Override
+    public int misPuntos(String IDPlayer) throws RemoteException {
+        int index;
+        Jugador aux = new Jugador(IDPlayer);
+        index = jugadores.indexOf(aux);
+        return jugadores.get(index).getPuntos();
+    }
+
+    void siguePartida() {
+        enCurso = true;
+        int num = jugadores.size();
+        for(int i = 0; i < num ; i++){
+            jugadores.get(i).setAcabo(false);
+            jugadores.get(i).setListo(false);
+        }
     }
     
 }

@@ -38,6 +38,7 @@ public class Administrador {
     InetAddress group;
     TCP coenxTCP;
     boolean ganador = false;
+    int arreMon[];
     //Hashtable< String,Integer> jugadores;
     //inicia comunicacioion multicast
     public void iniciaMulticast(){
@@ -58,11 +59,13 @@ public class Administrador {
     public void partida(){
         int aux;
         Random rand = new Random();
+        arreMon = new int[5];
         //this.jugadores = new Hashtable< String,Integer>();
         for(int i = 0 ; i < 5 ; i++){
             try {
                 System.out.println("123");
                 aux = rand.nextInt(11) + 1;
+                arreMon[i]=aux;
                 String  myMessage= aux + "";
                 byte [] m = myMessage.getBytes();
                 //Tambien cambia el socket de abajo.
@@ -108,6 +111,7 @@ public class Administrador {
             TCP tcp = new TCP(7899);               //Levanta TCP
             Partida engine = new Partida();        //Levanta Partida
             tcp.setP(engine);                      //sets
+            engine.setAdm(a);
             tcp.setAdm(a);                         //..
             tcp.start();                           //inicia hilo de mensajes TCP
             
@@ -129,9 +133,16 @@ public class Administrador {
                 //revListos() está en Partida.java, noo jala bien
                 if(!engine.revListos()){  
                     Thread.sleep(200);
-                }else{
-                    engine.inicioPartida();
-                    a.partida();  //manda todos los topos
+                }
+                else{
+                    
+                    if(!engine.enCurso &&  engine.finJuago){
+                        engine.inicioPartida();
+                        a.partida();  //manda todos los topos
+                        engine.finJuago = false;
+                    }else{
+                        engine.siguePartida();
+                    }
                     System.out.println("-------------------------");
                 }
             }

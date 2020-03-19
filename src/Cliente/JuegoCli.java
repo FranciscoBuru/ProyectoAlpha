@@ -34,15 +34,18 @@ public class JuegoCli extends Thread{
     int mulPort;// = 6791;
     String mulIP;// = "228.5.6.7";
     LoginPartida Log; //Cooonexioon a RMI
+    int[] arreMon;
+    int puntos;
     
     
-    public JuegoCli(String idJuego, int tcpPort, String tcpIP, int mulPort, String mulIP , LoginPartida Log) {
+    public JuegoCli(String idJuego, int tcpPort, String tcpIP, int mulPort, String mulIP , LoginPartida Log, int[] arre) {
         this.idJuego = idJuego;
         this.tcpPort = tcpPort;
         this.tcpIP = tcpIP;
         this.mulPort = mulPort;
         this.mulIP = mulIP;
         this.Log = Log;
+        this.arreMon = arre;
     }
     
     
@@ -64,6 +67,7 @@ public class JuegoCli extends Thread{
             int id;
             String aux;
             String puntajes;
+            boolean regreso = true;
             //while de Muuulticast
             while(true){
                 buffer = new byte[1000];
@@ -76,14 +80,27 @@ public class JuegoCli extends Thread{
                 gui.cambiaPuntos(puntajes);
                 //cuuando corro golpe() camba lla var nuevoMonstro a true
                 //se recive y escrbee el monsttro
+                
+                if(arreMon != null && regreso){
+                   regreso = false;
+                   puntos = Log.misPuntos(idJuego);
+                   System.out.println("EntroRegreso");
+                   nuevoMonstro = true;
+                   gui.quitaInicio();
+                }
                 if(nuevoMonstro){
                     System.out.println("Entro");
-                    s.receive(monstruo);
-                    //mando id del nuevo mons
-                    id = parseInt(new String(monstruo.getData(), 0, monstruo.getLength()));
-                    //si llega 100 es que ya hay un ganaddor
-                    //ddespuues del 100 hay llega uun str con el nombre del gana
-                    //dor, 
+                    if(arreMon != null && puntos < 5){
+                        id = arreMon[puntos];
+                        
+                    }else{
+                        s.receive(monstruo);
+                        //mando id del nuevo mons
+                        id = parseInt(new String(monstruo.getData(), 0, monstruo.getLength()));
+                        //si llega 100 es que ya hay un ganaddor
+                        //ddespuues del 100 hay llega uun str con el nombre del gana
+                        //dor, 
+                    }
                     if(id == 100){
                         s.receive(monstruo);
                         aux = (new String(monstruo.getData(), 0, monstruo.getLength()));
@@ -111,7 +128,7 @@ public class JuegoCli extends Thread{
         } catch (IOException ex) {
             Logger.getLogger(JuegoCli.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
+    }  
     //cuando le peghas a uun mostroo este metodo manda un aviso al servidor
     //usanddo sockeettss.
     public void golpe(){
@@ -119,7 +136,7 @@ public class JuegoCli extends Thread{
         try {
             this.nuevoMonstro = true;
             //Aqui iniiciaa coonex con serrv ppparra avisar que tiene un punto
-            
+            puntos = puntos +1;
             s = new Socket(tcpIP, tcpPort);
             
             DataOutputStream out =
@@ -142,6 +159,6 @@ public class JuegoCli extends Thread{
         this.gui = gui;
     }
 
-    
-    
+
+  
 }
