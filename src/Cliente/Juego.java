@@ -7,7 +7,6 @@
  */
 package Cliente;
 
-import Cliente.JuegoCli;
 import Interfaces.LoginPartida;
 import java.awt.Color;
 import java.rmi.RemoteException;
