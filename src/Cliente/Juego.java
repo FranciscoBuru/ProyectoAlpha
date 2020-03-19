@@ -30,6 +30,11 @@ public final class Juego extends javax.swing.JFrame {
     JButton botones[] = new JButton[16];
     LoginPartida Log;
     String IDPlayer;
+    int tcpPort;
+    String tcpIP;
+    int mulPort;
+    String mulIP;
+    boolean primerJuego = true;
     
     public Juego(String jug, int puntos, int tcpPort, String tcpIP, int mulPort, String mulIP,LoginPartida Log, int[] arreMon){
         initComponents();
@@ -37,25 +42,31 @@ public final class Juego extends javax.swing.JFrame {
         normalColor = Color.gray;
         this.Log = Log;
         this.IDPlayer = jug;
+        this.tcpPort = tcpPort;
+        this.tcpIP = tcpIP;
+        this.mulPort = mulPort;
+        this.mulIP = mulIP;
         llenaArre();
         setColores();
+        //this.setVisible(true);
         setJugador(jug, puntos,tcpPort, tcpIP, mulPort, mulIP, arreMon);
         
         
     }
     //IIniicia al jugador y lla conexion
     public final void setJugador(String jug, int puntos, int tcpPort, String tcpIP, int mulPort, String mulIP, int[] arreMon){
-        jugador = new JuegoCli(jug,tcpPort,tcpIP, mulPort,mulIP, Log,arreMon);
+        jugador = new JuegoCli(jug,puntos,tcpPort,tcpIP, mulPort,mulIP, Log,arreMon);
+        if(arreMon != null){
+            primerJuego = false;  
+        }
         jugador.setGui(this);
         jugador.start();
         jTextField1.setText(jug);
+        
+        //setJugador(jug, puntos, tcpPort, tcpIP, mulPort, mulIP, null);
+        
     }   
     //Metodo no coompleto, no sirve bien, ni see usa.
-    public void reconfigura(){
-        btnInicio.setEnabled(true);
-        avi.setText("");
-    }
-    
     public void llenaArre(){
         botones[0] = b11;
         botones[1] = b12;
@@ -116,11 +127,15 @@ public final class Juego extends javax.swing.JFrame {
     }
     //Poone un nuevo monssstrro en posicioin
     public void setMonstruo(int id){
-        botones[id-1].setBackground(monstruoColor);
+        botones[id].setBackground(monstruoColor);
     }
     public void quitaInicio(){
         btnInicio.setEnabled(false);
     }
+    public void habilitaInicio(){
+        btnInicio.setEnabled(true);
+    }
+    
     //Para poner un boton en coloor diifeereentte, se usa cuando la partida 
     //acabò
     public void setM(){
@@ -408,9 +423,19 @@ public final class Juego extends javax.swing.JFrame {
         
         try {
             // TODO add your handling code here:
-            Log.listo(IDPlayer);
-            btnInicio.setEnabled(false);
-            avi.setText("Esperando a los otros jugadores");
+            if(primerJuego){
+                primerJuego = false;
+                Log.listo(IDPlayer);
+                btnInicio.setEnabled(false);
+                avi.setText("Esperando a los otros jugadores");
+            }else{
+                primerJuego = false;
+                setJugador(IDPlayer, -1,  tcpPort,  tcpIP,  mulPort,  mulIP, null);
+                Log.listo(IDPlayer);
+                btnInicio.setEnabled(false);
+                avi.setText("Esperando a los otros jugadores");
+                setColores();
+            }
         } catch (RemoteException ex) {
             Logger.getLogger(Juego.class.getName()).log(Level.SEVERE, null, ex);
         }

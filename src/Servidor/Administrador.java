@@ -133,6 +133,7 @@ public class Administrador {
                 //revListos() está en Partida.java, noo jala bien
                 if(!engine.revListos()){  
                     Thread.sleep(200);
+                    System.out.println("1"); 
                 }
                 else{
                     
@@ -140,8 +141,24 @@ public class Administrador {
                         engine.inicioPartida();
                         a.partida();  //manda todos los topos
                         engine.finJuago = false;
-                    }else{
+                        System.out.println("2");
+                    }else if(engine.enCurso &&  !engine.finJuago){
                         engine.siguePartida();
+                        System.out.println("3");
+                    }else{
+                        //Reinicia juego
+                        //Tengo que asegurarme de que toddos esten liistos
+                        //antes de iniciar
+                        if(engine.revListos()){ 
+                            System.out.println("4");
+                            engine.enCurso = false;
+                            engine.inicioPartida();
+                            a.partida();  //manda todos los topos
+                            engine.finJuago = false;
+                        }else{
+                            Thread.sleep(200);
+                             System.out.println("5");
+                        }
                     }
                     System.out.println("-------------------------");
                 }

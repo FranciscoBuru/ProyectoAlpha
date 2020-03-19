@@ -38,7 +38,7 @@ public class JuegoCli extends Thread{
     int puntos;
     
     
-    public JuegoCli(String idJuego, int tcpPort, String tcpIP, int mulPort, String mulIP , LoginPartida Log, int[] arre) {
+    public JuegoCli(String idJuego,int puntos, int tcpPort, String tcpIP, int mulPort, String mulIP , LoginPartida Log, int[] arre) {
         this.idJuego = idJuego;
         this.tcpPort = tcpPort;
         this.tcpIP = tcpIP;
@@ -46,6 +46,7 @@ public class JuegoCli extends Thread{
         this.mulIP = mulIP;
         this.Log = Log;
         this.arreMon = arre;
+        this.puntos = puntos;
     }
     
     
@@ -86,7 +87,7 @@ public class JuegoCli extends Thread{
                    puntos = Log.misPuntos(idJuego);
                    System.out.println("EntroRegreso");
                    nuevoMonstro = true;
-                   gui.quitaInicio();
+                   //gui.quitaInicio();
                 }
                 if(nuevoMonstro){
                     System.out.println("Entro");
@@ -101,31 +102,52 @@ public class JuegoCli extends Thread{
                         //ddespuues del 100 hay llega uun str con el nombre del gana
                         //dor, 
                     }
-                    if(id == 100){
+                    if(id == 100 && puntos >= 0){
                         s.receive(monstruo);
                         aux = (new String(monstruo.getData(), 0, monstruo.getLength()));
                         gui.ganador(aux);  //escribe quien gano
                         gui.setM();  //pone un cuaddrto en verde
+                        gui.habilitaInicio();
 //---------------------------FALTA---------------------------------------------
                         //Regonfigurar todo para empezar nuevo juego
                             /*
-                                1. Vaciar cola multicast
-                                2. Poner bootton ¨listo¨ ddispoonible
-                        
-                            */ 
+                                1. Vaciar cola multicast*/
+                        //buffer = new byte[1000];
+                        //monstruo = new DatagramPacket(buffer, buffer.length);
+                        //nuevoMonstro = true;
+                            /**/ 
                         puntajes = Log.puntaje();
                         gui.cambiaPuntos(puntajes);
                         break;  //Truena el juego y te regresa al loop inf
                                 //por defauult de la interfaz de juego, hay que
                                 //hacer lo necesario para popdder iniciiar un
                                 //nueuvo juuego liiego luego.
+                    }else if(id == 100 && puntos <0){
+                        ///aqui hagoo todo
+                        s.receive(monstruo);
+                        while(puntos<0){
+                            s.receive(monstruo);
+                            id = parseInt(new String(monstruo.getData(), 0, monstruo.getLength()));
+                            if(id == 100){
+                                s.receive(monstruo);
+                            }else{
+                              puntos=0;  
+                            }
+                        }
+                        
+                        gui.setMonstruo(id);
+                        this.nuevoMonstro = false;
                     }else{
                         gui.setMonstruo(id);
                         this.nuevoMonstro = false;
                     }
                 }
-            }  
+            Thread.sleep(300);
+            }
+            
         } catch (IOException ex) {
+            Logger.getLogger(JuegoCli.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
             Logger.getLogger(JuegoCli.class.getName()).log(Level.SEVERE, null, ex);
         }
     }  
