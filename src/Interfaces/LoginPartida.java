@@ -24,4 +24,6 @@ public interface LoginPartida extends Remote{
     
     public String puntaje()throws RemoteException;
     
+    public int misPuntos(String IDPlayer)throws RemoteException;
+    
 }

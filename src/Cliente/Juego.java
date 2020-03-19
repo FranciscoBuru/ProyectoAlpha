@@ -31,7 +31,7 @@ public final class Juego extends javax.swing.JFrame {
     LoginPartida Log;
     String IDPlayer;
     
-    public Juego(String jug, int puntos, int tcpPort, String tcpIP, int mulPort, String mulIP,LoginPartida Log){
+    public Juego(String jug, int puntos, int tcpPort, String tcpIP, int mulPort, String mulIP,LoginPartida Log, int[] arreMon){
         initComponents();
         monstruoColor = Color.ORANGE;
         normalColor = Color.gray;
@@ -39,18 +39,17 @@ public final class Juego extends javax.swing.JFrame {
         this.IDPlayer = jug;
         llenaArre();
         setColores();
-        setJugador(jug, puntos,tcpPort, tcpIP, mulPort, mulIP);
+        setJugador(jug, puntos,tcpPort, tcpIP, mulPort, mulIP, arreMon);
         
         
     }
     //IIniicia al jugador y lla conexion
-    public final void setJugador(String jug, int puntos, int tcpPort, String tcpIP, int mulPort, String mulIP){
-        jugador = new JuegoCli(jug,tcpPort,tcpIP, mulPort,mulIP, Log);
+    public final void setJugador(String jug, int puntos, int tcpPort, String tcpIP, int mulPort, String mulIP, int[] arreMon){
+        jugador = new JuegoCli(jug,tcpPort,tcpIP, mulPort,mulIP, Log,arreMon);
         jugador.setGui(this);
         jugador.start();
         jTextField1.setText(jug);
-        
-    }
+    }   
     //Metodo no coompleto, no sirve bien, ni see usa.
     public void reconfigura(){
         btnInicio.setEnabled(true);
@@ -118,6 +117,9 @@ public final class Juego extends javax.swing.JFrame {
     //Poone un nuevo monssstrro en posicioin
     public void setMonstruo(int id){
         botones[id-1].setBackground(monstruoColor);
+    }
+    public void quitaInicio(){
+        btnInicio.setEnabled(false);
     }
     //Para poner un boton en coloor diifeereentte, se usa cuando la partida 
     //acabò
