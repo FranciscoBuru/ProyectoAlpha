@@ -9,6 +9,8 @@ import Interfaces.LoginPartida;
 import java.util.ArrayList;
 
 import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 
@@ -52,9 +54,10 @@ public class  Partida implements LoginPartida  {
         boolean res = false;
         System.out.println(num);
         if (num > 0) {
+            res = true;
             for(int i = 0; i < num ; i++){
                 if(jugadores.get(i).isEnJuego()){
-                    res = jugadores.get(i).isListo(); 
+                    res = jugadores.get(i).isListo() && res; 
                 }
             }
             if(res){
@@ -97,10 +100,16 @@ public class  Partida implements LoginPartida  {
     }
     //Resetea puntos a cero
     public void limpiaRonda() {
-        int num = jugadores.size();
-        finJuago = true;
-        for(int i = 0; i < num ; i++){
-            jugadores.get(i).resetPuntos();
+        try {
+            this.puntaje();
+            int num = jugadores.size();
+            finJuago = true;
+            for(int i = 0; i < num ; i++){
+                jugadores.get(i).resetPuntos();
+                adm.arreMon = new int[5];
+            }
+        } catch (RemoteException ex) {
+            Logger.getLogger(Partida.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     //El jugador lo mandda para decir que est[a listo

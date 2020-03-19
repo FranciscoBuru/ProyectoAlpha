@@ -124,7 +124,7 @@ public class Login extends javax.swing.JFrame {
                     av.setText("Usiario ya juega");
                 }else if(con.getPuntos() == -1){
                     //Alta nuevo jugador
-                    Juego gui = new Juego(usr, con.getPuntos(), con.getTcpPort(), con.getTcpIP(), con.getMulPort(), con.getMulIP(), Log, con.getArreMon());
+                    Juego gui = new Juego(usr, 0, con.getTcpPort(), con.getTcpIP(), con.getMulPort(), con.getMulIP(), Log, con.getArreMon());
                     gui.setVisible(true);
                 }else{
                     //Jugador vuelve a entrar
