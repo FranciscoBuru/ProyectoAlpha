@@ -81,7 +81,23 @@ public final class Juego extends javax.swing.JFrame {
         botones[11] = b34;
     }
     
+    public void edoBotones(boolean edo){
+        botones[0].setEnabled(edo);
+        botones[1].setEnabled(edo);
+        botones[2].setEnabled(edo);
+        botones[3].setEnabled(edo);
+        botones[4].setEnabled(edo);
+        botones[5].setEnabled(edo);
+        botones[6].setEnabled(edo);
+        botones[7].setEnabled(edo);
+        botones[8].setEnabled(edo);
+        botones[9].setEnabled(edo);
+        botones[10].setEnabled(edo);
+        botones[11].setEnabled(edo);
+    }
+    
     public void setColores(){
+        this.edoBotones(true);
         botones[0].setBackground(normalColor);
         botones[1].setBackground(normalColor);
         botones[2].setBackground(normalColor);
@@ -98,6 +114,7 @@ public final class Juego extends javax.swing.JFrame {
     //escriibee ell ganaador en el cuuadro de textto de laa derecha.
     public void ganador(String msj){
         jTextField1.setText("Ganador:\n " + msj);
+        this.edoBotones(false);
     }
     
     //mètodo que verrifica ss el botòon que aprettaron era el del
