@@ -36,7 +36,7 @@ public final class Juego extends javax.swing.JFrame {
     String mulIP;
     boolean primerJuego = true;
     
-    public Juego(String jug, int puntos, int tcpPort, String tcpIP, int mulPort, String mulIP,LoginPartida Log, int[] arreMon){
+    public Juego(String jug, int puntos, int tcpPort, String tcpIP, int mulPort, String mulIP,LoginPartida Log){
         initComponents();
         monstruoColor = Color.ORANGE;
         normalColor = Color.gray;
@@ -49,14 +49,14 @@ public final class Juego extends javax.swing.JFrame {
         llenaArre();
         setColores();
         //this.setVisible(true);
-        setJugador(jug, puntos,tcpPort, tcpIP, mulPort, mulIP, arreMon);
+        setJugador(jug, puntos,tcpPort, tcpIP, mulPort, mulIP);
         
         
     }
     //IIniicia al jugador y lla conexion
-    public final void setJugador(String jug, int puntos, int tcpPort, String tcpIP, int mulPort, String mulIP, int[] arreMon){
-        jugador = new JuegoCli(jug,puntos,tcpPort,tcpIP, mulPort,mulIP, Log,arreMon);
-        if(arreMon != null){
+    public final void setJugador(String jug, int puntos, int tcpPort, String tcpIP, int mulPort, String mulIP){
+        jugador = new JuegoCli(jug,puntos,tcpPort,tcpIP, mulPort,mulIP, Log);
+        if(puntos >=0){
             primerJuego = false;  
         }
         jugador.setGui(this);
@@ -98,19 +98,17 @@ public final class Juego extends javax.swing.JFrame {
     }
     //escriibee ell ganaador en el cuuadro de textto de laa derecha.
     public void ganador(String msj){
-        jTextField1.setText("Ganador: " + msj);
-        
+        jTextField1.setText("Ganador:\n " + msj);
     }
+    
     //mètodo que verrifica ss el botòon que aprettaron era el del
     //mounstro, si si era manda golpe() al JuuegoClii para que
     //este poonga un  nuuevo moonstroo een la interrfaz.
     public void click(int id){
         if(botones[id-1].getBackground() ==  monstruoColor){
             botones[id-1].setBackground(normalColor);
-            //botones[id+1].setBackground(monstruoColor);
             jTextField1.setText("Ouch!!");
             jugador.golpe();
-        
         }else{
             jTextField1.setText("Fallaste");
         }
@@ -430,7 +428,7 @@ public final class Juego extends javax.swing.JFrame {
                 avi.setText("Esperando a los otros jugadores");
             }else{
                 primerJuego = false;
-                setJugador(IDPlayer, -1,  tcpPort,  tcpIP,  mulPort,  mulIP, null);
+                setJugador(IDPlayer, 0,  tcpPort,  tcpIP,  mulPort,  mulIP);
                 Log.listo(IDPlayer);
                 btnInicio.setEnabled(false);
                 avi.setText("Esperando a los otros jugadores");

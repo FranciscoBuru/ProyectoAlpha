@@ -5,9 +5,6 @@
  */
 package Servidor;
 
-import java.io.Serializable;
-import java.util.Objects;
-
 /**
  *
  * @author Francisco
@@ -15,7 +12,7 @@ import java.util.Objects;
 
 //Objeto jugaddor de java.
 
-public class Jugador implements Serializable {
+public class Jugador {
     public String id;
     public int puntos;
     public boolean enJuego;
@@ -48,7 +45,6 @@ public class Jugador implements Serializable {
         this.acabo = acabo;
     }
     
-
     public boolean isListo() {
         return listo;
     }
@@ -57,13 +53,10 @@ public class Jugador implements Serializable {
         this.listo = listo;
     }
 
-
-
+    @Override
     public boolean equals(Object o) {
         return o.getClass() == this.getClass() && ((Jugador)o).getId().equals(this.id);
     }
-
-    
     
     public String getId() {
         return id;
@@ -88,11 +81,6 @@ public class Jugador implements Serializable {
     
     public void resetPuntos() {
         this.puntos = 0;
-    }
-    
-    
-    
-    
-    
-    
+    }    
+   
 }
