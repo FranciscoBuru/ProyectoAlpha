@@ -6,17 +6,8 @@
 package Servidor;
 
 import Interfaces.LoginPartida;
-import java.io.IOException;
-import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.rmi.Remote;
-import java.util.Hashtable;
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -38,76 +29,32 @@ public class Administrador {
     InetAddress group;
     TCP coenxTCP;
     boolean ganador = false;
-    int arreMon[];
-    //Hashtable< String,Integer> jugadores;
-    //inicia comunicacioion multicast
-    public void iniciaMulticast(){
-        try {
-            group = InetAddress.getByName(mulIP);
-            s = new MulticastSocket(mulPu);
-            s.joinGroup(group);
-            s.setTimeToLive(1);
-            //s.leaveGroup(group);
-            } catch (UnknownHostException ex) { 
-            Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    Multicast m;
+
+    public Administrador() {
+    
     }
-    
-    //Mandda los 5 monstros del juego
-    public void partida(){
-        int aux;
-        Random rand = new Random();
-        arreMon = new int[5];
-        //this.jugadores = new Hashtable< String,Integer>();
-        for(int i = 0 ; i < 5 ; i++){
-            try {
-                System.out.println("123");
-                aux = rand.nextInt(11) + 1;
-                arreMon[i]=aux;
-                String  myMessage= aux + "";
-                byte [] m = myMessage.getBytes();
-                //Tambien cambia el socket de abajo.
-                DatagramPacket messageOut =
-                        new DatagramPacket(m, m.length, group, mulPu);
-                //Manda mensajes
-                s.send(messageOut);
-            } catch (IOException ex) {
-                Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
-            }
-    
-        }
+
+    public void setM(Multicast m){
+        this.m = m;
         
     }
-    //Hay que acabar este metodo
-    public void nuevoJuego(){
+
+    public synchronized void ganador(String nom) {
+        System.out.println(nom);
+        m.ganador(nom);  
     }
     
-    //manda el nombre del ganador con multicast
-    public synchronized void ganador(String nom){
-        ganador = true;
-        System.out.println("Manddanddo Ganador");  
-        try {
-            String  myMessage= "100";
-            byte [] m = myMessage.getBytes();
-            DatagramPacket messageOut = new DatagramPacket(m, m.length, group, mulPu);
-            s.send(messageOut);
-            m = nom.getBytes();
-            messageOut = new DatagramPacket(m, m.length, group, mulPu);
-            s.send(messageOut);
-            System.out.println("Ganador Mandaddo");  
-            
-        } catch (IOException ex) {
-            Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
     
     public static void main(String[] args) throws InterruptedException {
         try {
             
             Administrador a = new Administrador(); //levanta adm
-            a.iniciaMulticast();                   //Inicia multicast 
+            Multicast m = new Multicast();
+            m.setAdm(a);
+            a.setM(m);
+            m.iniciaMulticast();
+            //a.iniciaMulticast();                   //Inicia multicast 
             TCP tcp = new TCP(7899);               //Levanta TCP
             Partida engine = new Partida();        //Levanta Partida
             tcp.setP(engine);                      //sets
@@ -133,15 +80,11 @@ public class Administrador {
                 //revListos() está en Partida.java, noo jala bien
                 if(!engine.revListos()){  
                     Thread.sleep(200);
-                    System.out.println("1"); 
-                }
-                else{
-                    
+                }else{
                     if(!engine.enCurso &&  engine.finJuago){
                         engine.inicioPartida();
-                        a.partida();  //manda todos los topos
-                        engine.finJuago = false;
-                        System.out.println("2");
+                        m.start();  //manda todos los topos
+                        engine.finJuago = false; 
                     }else if(engine.enCurso &&  !engine.finJuago){
                         engine.siguePartida();
                         System.out.println("3");
@@ -153,14 +96,16 @@ public class Administrador {
                             System.out.println("4");
                             engine.enCurso = false;
                             engine.inicioPartida();
-                            a.partida();  //manda todos los topos
+                            m = new Multicast();
+                            m.setAdm(a);
+                            a.setM(m);
+                            m.iniciaMulticast();
+                            m.start();
                             engine.finJuago = false;
                         }else{
                             Thread.sleep(200);
-                             System.out.println("5");
                         }
                     }
-                    System.out.println("-------------------------");
                 }
             }
             

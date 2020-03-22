@@ -4,16 +4,14 @@
  * and open the template in the editor.
  */
 package Servidor;
+
+
 import Interfaces.Conex;
 import Interfaces.LoginPartida;
 import java.util.ArrayList;
-
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-
-
 
 /**
  *
@@ -77,7 +75,7 @@ public class  Partida implements LoginPartida  {
     //Regresa una conexioon al usuario
     @Override
     public Conex Conect(String IDPlayer) throws RemoteException {
-        //if(jugadores.contains(IDPlayer)){}
+        Conex con;
         int num = jugadores.size();
         boolean existe = false;
         int i = 0;
@@ -88,15 +86,17 @@ public class  Partida implements LoginPartida  {
         }
         if(existe && !jugadores.get(i-1).isEnJuego()){
             jugadores.get(i-1).setEnJuego(true);
-            return new Conex(IDPlayer,jugadores.get(i-1).getPuntos(), 7899, "localhost", 6791, "228.5.6.7", adm.arreMon);  
+            jugadores.get(i-1).setListo(false);
+            jugadores.get(i-1).setAcabo(false);
+            con = new Conex(IDPlayer,jugadores.get(i-1).getPuntos(), 7899, "localhost", 6791, "228.5.6.7");  
         }else if(existe){
-            return new Conex(null);
+            con = new Conex(null);
         }else{
             jugadores.add(new Jugador(IDPlayer, 0));
             System.out.println("Agrego nuevo");
-            return new Conex(IDPlayer, 7899, "localhost", 6791, "228.5.6.7");
+            con = new Conex(IDPlayer, 7899, "localhost", 6791, "228.5.6.7");
         }
-        
+        return con;
     }
     //Resetea puntos a cero
     public void limpiaRonda() {
@@ -106,7 +106,6 @@ public class  Partida implements LoginPartida  {
             finJuago = true;
             for(int i = 0; i < num ; i++){
                 jugadores.get(i).resetPuntos();
-                adm.arreMon = new int[5];
             }
         } catch (RemoteException ex) {
             Logger.getLogger(Partida.class.getName()).log(Level.SEVERE, null, ex);
@@ -151,8 +150,7 @@ public class  Partida implements LoginPartida  {
                 i = i-1;
                 num = num-1;
             }
-        }
-        
+        }    
     }
 
     @Override
@@ -172,4 +170,11 @@ public class  Partida implements LoginPartida  {
         }
     }
     
+    public int getIndex(String nom){
+        return jugadores.indexOf(new Jugador(nom));
+    }
+    
+    public int getPuntos(int index){
+        return jugadores.get(index).incPuntos();
+    }
 }

@@ -13,14 +13,13 @@ package Cliente;
 
 import Interfaces.Conex;
 import Interfaces.LoginPartida;
-import java.io.Serializable;
-import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 public class Login extends javax.swing.JFrame {
 
     /**
@@ -124,11 +123,11 @@ public class Login extends javax.swing.JFrame {
                     av.setText("Usiario ya juega");
                 }else if(con.getPuntos() == -1){
                     //Alta nuevo jugador
-                    Juego gui = new Juego(usr, 0, con.getTcpPort(), con.getTcpIP(), con.getMulPort(), con.getMulIP(), Log, con.getArreMon());
+                    Juego gui = new Juego(usr, 0, con.getTcpPort(), con.getTcpIP(), con.getMulPort(), con.getMulIP(), Log);
                     gui.setVisible(true);
                 }else{
                     //Jugador vuelve a entrar
-                    Juego gui = new Juego(usr, con.getPuntos(), con.getTcpPort(), con.getTcpIP(), con.getMulPort(), con.getMulIP(), Log, con.getArreMon());
+                    Juego gui = new Juego(usr, con.getPuntos(), con.getTcpPort(), con.getTcpIP(), con.getMulPort(), con.getMulIP(), Log);
                     gui.setVisible(true);
                     
                 }

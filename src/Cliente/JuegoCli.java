@@ -27,33 +27,25 @@ import java.util.logging.Logger;
 
 public class JuegoCli extends Thread{
     String idJuego;// = "BURU";
-    boolean nuevoMonstro = true;
     public Juego gui;
     int tcpPort;// = 7899;
     String tcpIP;// = "localhost";
     int mulPort;// = 6791;
     String mulIP;// = "228.5.6.7";
     LoginPartida Log; //Cooonexioon a RMI
-    int[] arreMon;
     int puntos;
     
     
-    public JuegoCli(String idJuego,int puntos, int tcpPort, String tcpIP, int mulPort, String mulIP , LoginPartida Log, int[] arre) {
+    public JuegoCli(String idJuego,int puntos, int tcpPort, String tcpIP, int mulPort, String mulIP , LoginPartida Log) {
         this.idJuego = idJuego;
         this.tcpPort = tcpPort;
         this.tcpIP = tcpIP;
         this.mulPort = mulPort;
         this.mulIP = mulIP;
         this.Log = Log;
-        this.arreMon = arre;
         this.puntos = puntos;
     }
-    
-    
-    
-    
-    
-    
+
     @Override
     public void run(){
         try {
@@ -68,104 +60,49 @@ public class JuegoCli extends Thread{
             int id;
             String aux;
             String puntajes;
-            boolean regreso = true;
             //while de Muuulticast
             while(true){
                 buffer = new byte[1000];
                 monstruo = new DatagramPacket(buffer, buffer.length);
-                //System.out.println("Existo");
-                //Me llegan por RMI los puntos de los demàs
-                //y los esscribo con lo dde abajo
                 puntajes = Log.puntaje();
-                //puntajes.compareTo("[a: 0,b: 0]") == 0 ;
                 gui.cambiaPuntos(puntajes);
-                //cuuando corro golpe() camba lla var nuevoMonstro a true
-                //se recive y escrbee el monsttro
-                
-                if(arreMon != null && regreso){
-                   regreso = false;
-                   puntos = Log.misPuntos(idJuego);
-                   System.out.println("EntroRegreso");
-                   nuevoMonstro = true;
-                   //gui.quitaInicio();
-                }
-                if(nuevoMonstro){
-                    System.out.println("Entro");
-                    if(arreMon != null && puntos < 5){
-                        id = arreMon[puntos];
-                        
-                    }else{
-                        s.receive(monstruo);
-                        //mando id del nuevo mons
-                        id = parseInt(new String(monstruo.getData(), 0, monstruo.getLength()));
-                        //si llega 100 es que ya hay un ganaddor
-                        //ddespuues del 100 hay llega uun str con el nombre del gana
-                        //dor, 
+                gui.cambiaAvi("Juego!!");
+                s.receive(monstruo);
+                id = parseInt(new String(monstruo.getData(), 0, monstruo.getLength()));
+                //ID cuando alguien gana es 100      
+                if(id == 100){
+                    s.receive(monstruo);
+                    aux = (new String(monstruo.getData(), 0, monstruo.getLength()));
+                    gui.ganador(aux);  //escribe quien gano
+                    gui.setM();  //pone un cuaddrto en verde
+                    gui.habilitaInicio();
+                    puntajes = Log.puntaje();
+                    gui.cambiaPuntos(puntajes);
+                    break;  
+                }else{
+                    gui.setColores();
+                    gui.setMonstruo(id);
                     }
-                    if(id == 100 && puntos >= 0){
-                        s.receive(monstruo);
-                        aux = (new String(monstruo.getData(), 0, monstruo.getLength()));
-                        gui.ganador(aux);  //escribe quien gano
-                        gui.setM();  //pone un cuaddrto en verde
-                        gui.habilitaInicio();
-//---------------------------FALTA---------------------------------------------
-                        //Regonfigurar todo para empezar nuevo juego
-                            /*
-                                1. Vaciar cola multicast*/
-                        //buffer = new byte[1000];
-                        //monstruo = new DatagramPacket(buffer, buffer.length);
-                        //nuevoMonstro = true;
-                            /**/ 
-                        puntajes = Log.puntaje();
-                        gui.cambiaPuntos(puntajes);
-                        break;  //Truena el juego y te regresa al loop inf
-                                //por defauult de la interfaz de juego, hay que
-                                //hacer lo necesario para popdder iniciiar un
-                                //nueuvo juuego liiego luego.
-                    }else if(id == 100 && puntos <0){
-                        ///aqui hagoo todo
-                        s.receive(monstruo);
-                        while(puntos<0){
-                            s.receive(monstruo);
-                            id = parseInt(new String(monstruo.getData(), 0, monstruo.getLength()));
-                            if(id == 100){
-                                s.receive(monstruo);
-                            }else{
-                              puntos=0;  
-                            }
-                        }
-                        
-                        gui.setMonstruo(id);
-                        this.nuevoMonstro = false;
-                    }else{
-                        gui.setMonstruo(id);
-                        this.nuevoMonstro = false;
-                    }
-                }
-            Thread.sleep(300);
-            }
-            
-        } catch (IOException ex) {
-            Logger.getLogger(JuegoCli.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException ex) {
+                } 
+            } catch (IOException ex) {
             Logger.getLogger(JuegoCli.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }  
-    //cuando le peghas a uun mostroo este metodo manda un aviso al servidor
+            
+} 
+    
+      
+
+    //cuando le pegas a uun mostroo este metodo manda un aviso al servidor
     //usanddo sockeettss.
     public void golpe(){
         Socket s = null;
         try {
-            this.nuevoMonstro = true;
             //Aqui iniiciaa coonex con serrv ppparra avisar que tiene un punto
             puntos = puntos +1;
             s = new Socket(tcpIP, tcpPort);
-            
             DataOutputStream out =
                     new DataOutputStream( s.getOutputStream());
-            System.out.println("Evi111");
             out.writeUTF(idJuego);
-            System.out.println("Envi222");
         }catch (IOException ex){
             Logger.getLogger(JuegoCli.class.getName()).log(Level.SEVERE, null, ex);} 
         finally {
@@ -176,7 +113,6 @@ public class JuegoCli extends Thread{
             }
         }
     }
-    
     public void setGui(Juego gui){
         this.gui = gui;
     }

@@ -8,9 +8,6 @@ package Servidor;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,8 +17,6 @@ import java.util.logging.Logger;
  */
 public class Puntos extends Thread  {
     
-    
-    boolean  hayG = false;
     Administrador adm;
     Partida pa;
     Socket clientSocket;
@@ -47,16 +42,11 @@ public class Puntos extends Thread  {
         int puntos;
         int index;
         boolean res = false;
-        System.out.println("Actualizando");   
-        System.out.println(pa.jugadores.size());
-        index = pa.jugadores.indexOf(new Jugador(nom));
-        puntos = pa.jugadores.get(index).incPuntos();
-        System.out.println("Puntos J: " + puntos);  
-        //Entra cuandddo hay un gganaddor
+        index = pa.getIndex(nom);
+        puntos = pa.getPuntos(index);
         if(puntos == 5){
-            res = true;
-            hayG=true;
-            System.out.println("Ganador");  
+            res = true; 
+            System.out.println(nom);
             adm.ganador(nom);
             pa.limpiaRonda();
         }

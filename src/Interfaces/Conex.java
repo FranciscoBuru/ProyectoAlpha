@@ -21,16 +21,16 @@ public class Conex implements Serializable {
     String tcpIP;// = "localhost";
     int mulPort;// = 6791;
     String mulIP;// = "228.5.6.7";
-    int arreMon[];
     
-    public Conex(String idJugador, int puntos, int tcpPort, String tcpIP, int mulPort, String mulIP, int arreMon[]) {
+    
+    public Conex(String idJugador, int puntos, int tcpPort, String tcpIP, int mulPort, String mulIP) {
         this.idJugador = idJugador;
         this.puntos = puntos;
         this.tcpPort = tcpPort;
         this.tcpIP = tcpIP;
         this.mulPort = mulPort;
         this.mulIP = mulIP;
-        this.arreMon = arreMon;
+        
     }
 
     public Conex(String idJugador) {
@@ -70,7 +70,4 @@ public class Conex implements Serializable {
         return mulIP;
     }
 
-    public int[] getArreMon() {
-        return arreMon;
-    }
 }
