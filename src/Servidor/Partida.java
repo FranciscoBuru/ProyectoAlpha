@@ -18,10 +18,10 @@ import java.util.logging.Logger;
  * @author Francisco
  */
 
-//Intento dedd objeto partda de java
+//Intento de objeto paritda de java
 //Guarda a los jugadores que se dan de alta
 //E intenta guardar el status de los jugadores
-//Para que los jugadores puedan hhacer loggin despues de
+//Para que los jugadores puedan hacer login despues de
 //hacer logout y poder jugar
 
 //Es la clase que usa RMI para mandar datos de conexion a los jugadores
@@ -41,12 +41,10 @@ public class  Partida implements LoginPartida  {
     }
 
     public void setAdm(Administrador adm) {
-        this.adm = adm;
+        this.adm = adm; // necesita un administrador para comunicarse con todo el juego
     }
     
-    //Se supone que revisa si la partida ya terminó
-    //(Que loos jugadores que estan logged ya estén listos para jugar)
-    //Creo que este está mal
+    // Para saber si todos los jugadores que hicieron login estan listos para jugar.
     public boolean revListos(){
         int num = jugadores.size();
         boolean res = false;
@@ -58,7 +56,7 @@ public class  Partida implements LoginPartida  {
                     res = jugadores.get(i).isListo() && res; 
                 }
             }
-            if(res){
+            if(res){ //Quita del arreglo de jugadores a los jugadores que se salieron.
                 for(int i = 0; i < num ; i++){
                     if(!jugadores.get(i).isEnJuego()){
                         jugadores.remove(i);
@@ -72,7 +70,7 @@ public class  Partida implements LoginPartida  {
     }
     
 
-    //Regresa una conexioon al usuario
+    //Regresa una conexion al usuario que quiere hacer login y checa el status del jugador.
     @Override
     public Conex Conect(String IDPlayer) throws RemoteException {
         Conex con;
@@ -98,6 +96,7 @@ public class  Partida implements LoginPartida  {
         }
         return con;
     }
+    
     //Resetea puntos a cero
     public void limpiaRonda() {
         try {
@@ -111,7 +110,7 @@ public class  Partida implements LoginPartida  {
             Logger.getLogger(Partida.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    //El jugador lo mandda para decir que est[a listo
+    //El jugador lo manda para decir que está listo
     @Override
     public void listo(String IDPlayer) throws RemoteException {
         int index;
@@ -119,7 +118,7 @@ public class  Partida implements LoginPartida  {
         index = jugadores.indexOf(aux);
         jugadores.get(index).setListo(true);
     }
-    //El jugaddor loo manda para avisar que esta saliendo de la partida
+    //El jugador lo manda para avisar que esta saliendo de la partida
     @Override
     public void logout(String IDPlayer) throws RemoteException {
         int index;
@@ -136,7 +135,7 @@ public class  Partida implements LoginPartida  {
         return ultima;
         
     }
-    //metodo que se supoone pone a todos los jugaddores 
+    //metodo que pone a todos los jugadores 
     //listos para iniciar partida
     public void inicioPartida() {
         limpiaRonda();

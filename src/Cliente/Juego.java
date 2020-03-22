@@ -35,6 +35,7 @@ public final class Juego extends javax.swing.JFrame {
     String mulIP;
     boolean primerJuego = true;
     
+    //Recibe todos los puertos y el lookup de RMI
     public Juego(String jug, int puntos, int tcpPort, String tcpIP, int mulPort, String mulIP,LoginPartida Log){
         initComponents();
         monstruoColor = Color.ORANGE;
@@ -45,15 +46,15 @@ public final class Juego extends javax.swing.JFrame {
         this.tcpIP = tcpIP;
         this.mulPort = mulPort;
         this.mulIP = mulIP;
-        llenaArre();
-        setColores();
-        //this.setVisible(true);
+        llenaArre(); // los botones se guardan en un arreglo
+        setColores(); // pone todas las casillas en gris
         setJugador(jug, puntos,tcpPort, tcpIP, mulPort, mulIP);
         
         
     }
-    //IIniicia al jugador y lla conexion
+    //Inicia al jugador y la conexion
     public final void setJugador(String jug, int puntos, int tcpPort, String tcpIP, int mulPort, String mulIP){
+        // JuegoCli es el que maneja la interfaz y el que hace las conexiones
         jugador = new JuegoCli(jug,puntos,tcpPort,tcpIP, mulPort,mulIP, Log);
         if(puntos >=0){
             primerJuego = false;  
@@ -61,11 +62,8 @@ public final class Juego extends javax.swing.JFrame {
         jugador.setGui(this);
         jugador.start();
         jTextField1.setText(jug);
-        
-        //setJugador(jug, puntos, tcpPort, tcpIP, mulPort, mulIP, null);
-        
     }   
-    //Metodo no coompleto, no sirve bien, ni see usa.
+
     public void llenaArre(){
         botones[0] = b11;
         botones[1] = b12;
@@ -111,15 +109,15 @@ public final class Juego extends javax.swing.JFrame {
         botones[10].setBackground(normalColor);
         botones[11].setBackground(normalColor);
     }
-    //escriibee ell ganaador en el cuuadro de textto de laa derecha.
+    //escribe el ganador en el cuuadro de texto de laa derecha.
     public void ganador(String msj){
-        jTextField1.setText("Ganador:\n " + msj);
+        jTextField1.setText("El ganador es el jugador:\n " + msj);
         this.edoBotones(false);
     }
     
-    //mètodo que verrifica ss el botòon que aprettaron era el del
-    //mounstro, si si era manda golpe() al JuuegoClii para que
-    //este poonga un  nuuevo moonstroo een la interrfaz.
+    //método que verifica que el botón que apretaron era el del
+    //monstruo. Si si era manda golpe() al JuegoCli para que
+    //este ponga un  nuevo monstruo en la interfaz.
     public void click(int id){
         if(botones[id-1].getBackground() ==  monstruoColor){
             botones[id-1].setBackground(normalColor);
@@ -129,13 +127,13 @@ public final class Juego extends javax.swing.JFrame {
             jTextField1.setText("Fallaste");
         }
     }
-    //Metodos para cambiar cosas de la intrfàz desde Juego Cli.java
+    //Metodos para cambiar cosas de la intrfáz desde Juego Cli.java
     
-    //Cambia avissos, es el textfeild deeel ladoo derecho
+    //Cambia avisos, es el textfield del lado derecho
     public void cambiaAvi(String text){
         avi.setText(text);
     }
-    //cambia el texto de la parte de puntoos de los jugadorees
+    //cambia el texto de la parte de puntos de los jugadorees
     public void cambiaPuntos(String text){
         txtPuntos.setText(text);
     }
@@ -150,8 +148,8 @@ public final class Juego extends javax.swing.JFrame {
         btnInicio.setEnabled(true);
     }
     
-    //Para poner un boton en coloor diifeereentte, se usa cuando la partida 
-    //acabò
+    //Para poner un boton en color diiferente, se usa cuando la partida 
+    //acabó
     public void setM(){
         botones[1].setBackground(Color.GREEN);
     }
@@ -428,8 +426,8 @@ public final class Juego extends javax.swing.JFrame {
     private void btnInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInicioActionPerformed
         
         
-        //La idea de este bot[on es dejar que cada uno de loss cliientes
-        //ponga que estt[a liisto y sse inice eel juego si todoss los 
+        //La idea de este botón es dejar que cada uno de los clientes
+        //ponga que está listo y se inicie el juego si todoss los 
         //cclientes quee esstan conectados piicaron el boton.
         
         //Avecees cuando un solo cliente le pica se iniicia eel juego.
@@ -437,12 +435,12 @@ public final class Juego extends javax.swing.JFrame {
         
         try {
             // TODO add your handling code here:
-            if(primerJuego){
+            if(primerJuego){ // si hace login
                 primerJuego = false;
                 Log.listo(IDPlayer);
                 btnInicio.setEnabled(false);
                 avi.setText("Esperando a los otros jugadores");
-            }else{
+            }else{ // si no es su primer juego (se salió y volvió a entrar o inicia una nueva partida)
                 primerJuego = false;
                 setJugador(IDPlayer, 0,  tcpPort,  tcpIP,  mulPort,  mulIP);
                 Log.listo(IDPlayer);
@@ -459,8 +457,8 @@ public final class Juego extends javax.swing.JFrame {
     private void btnSalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalActionPerformed
        
         //Este boton es para "salir" del juego, si le picas tache
-        //en vez de este boton no te marca el logout y no puedees 
-        //volveer a entrar con el mmiismo nombre.
+        //en vez de este boton no te marca el logout y no puedes 
+        //volver a entrar con el mismo nombre.
         
         try {
             // TODO add your handling code here:

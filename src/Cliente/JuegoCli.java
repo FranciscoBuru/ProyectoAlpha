@@ -54,29 +54,29 @@ public class JuegoCli extends Thread{
             InetAddress group = InetAddress.getByName(mulIP);
             s = new MulticastSocket(mulPort);
             s.joinGroup(group);
-            //varriables dde ruun
+            //variables de run
             byte[] buffer;
             DatagramPacket monstruo;
             int id;
             String aux;
             String puntajes;
-            //while de Muuulticast
+            //while de Multicast para recibir monstruos
             while(true){
                 buffer = new byte[1000];
                 monstruo = new DatagramPacket(buffer, buffer.length);
-                puntajes = Log.puntaje();
-                gui.cambiaPuntos(puntajes);
+                puntajes = Log.puntaje(); // regresa el puntaje de todos los que están jugando
+                gui.cambiaPuntos(puntajes); // imprime en la interfaz los puntajes de todos
                 gui.cambiaAvi("Juego!!");
-                s.receive(monstruo);
+                s.receive(monstruo); // Un número del 0 al 11. o 100 si alguien ganó.
                 id = parseInt(new String(monstruo.getData(), 0, monstruo.getLength()));
                 //ID cuando alguien gana es 100      
                 if(id == 100){
-                    s.receive(monstruo);
+                    s.receive(monstruo); // aqui va a estar el nombre del que ganó
                     aux = (new String(monstruo.getData(), 0, monstruo.getLength()));
-                    gui.ganador(aux);  //escribe quien gano
-                    gui.setM();  //pone un cuaddrto en verde
-                    gui.habilitaInicio();
-                    puntajes = Log.puntaje();
+                    gui.ganador(aux);  //escribe quien ganó
+                    gui.setM();  //pone un cuadrito en verde
+                    gui.habilitaInicio(); 
+                    puntajes = Log.puntaje(); // actualiza puntajes 
                     gui.cambiaPuntos(puntajes);
                     break;  
                 }else{
@@ -92,12 +92,12 @@ public class JuegoCli extends Thread{
     
       
 
-    //cuando le pegas a uun mostroo este metodo manda un aviso al servidor
-    //usanddo sockeettss.
+    //cuando le pegas a un monstruo este metodo manda un aviso al servidor
+    //usando sockets.
     public void golpe(){
         Socket s = null;
         try {
-            //Aqui iniiciaa coonex con serrv ppparra avisar que tiene un punto
+            //Aqui inicia conex con serv para avisar que tiene un punto
             puntos = puntos +1;
             s = new Socket(tcpIP, tcpPort);
             DataOutputStream out =

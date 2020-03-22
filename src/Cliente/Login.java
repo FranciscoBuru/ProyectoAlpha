@@ -108,19 +108,21 @@ public class Login extends javax.swing.JFrame {
             try { 
                 
                 //Levanta RMI, cambia la ruta de abajo
-                System.setProperty("java.security.policy", "file:/C:/Users/Francisco/Documents/NetBeansProjects/ProyectoAlpha/src/Cliente/client.policy");
+                System.setProperty("java.security.policy", "file:/C:/Users/Mariella/Documents/ITAM/Semestre 8/Sistemas Distribuidos/ProyectoAlpha/src/Cliente/client.policy");
                 if (System.getSecurityManager() == null) {
                     System.setSecurityManager(new SecurityManager());
                 }
                 String name = "Login";
+                // Registra al RMI
                 Registry registry = LocateRegistry.getRegistry("localhost");  //Aqui va la IP del servidor
+                // Lookup del RMI
                 LoginPartida Log = (LoginPartida) registry.lookup(name);
                 
-                con = Log.Conect(usr);
-                //en localhost va la ip del serrvidor
-                //Revisa lo quue regresa del usuario
+                con = Log.Conect(usr); // En con ahora están los detalles de conexión
+                //en localhost va la ip del servidor
+                //Revisa lo que regresa del usuario
                 if(con.getIdJugador() == null){
-                    av.setText("Usiario ya juega");
+                    av.setText("Usuario ya juega");
                 }else if(con.getPuntos() == -1){
                     //Alta nuevo jugador
                     Juego gui = new Juego(usr, 0, con.getTcpPort(), con.getTcpIP(), con.getMulPort(), con.getMulIP(), Log);
