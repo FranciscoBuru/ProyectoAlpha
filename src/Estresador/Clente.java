@@ -91,7 +91,7 @@ public Clente(String idJuego, Promedio p) {
                     
                     promedio = tiempo/golpes;
                     p.actSuma(promedio);
-                    System.out.println(p.getProm()/50); 
+                    System.out.println(promedio); 
                     break;  
                 }else{
                    aux2 = rand.nextInt(3);
@@ -161,7 +161,7 @@ public Clente(String idJuego, Promedio p) {
             String name = "Login";
             Registry registry = LocateRegistry.getRegistry("localhost");  //Aqui va la IP del servidor
             LoginPartida Log = (LoginPartida) registry.lookup(name);
-            for(int i = 0; i < 50 ; i++){
+            for(int i = 0; i < 500 ; i++){
                 con = Log.Conect(i+1 + "");
                 c = new Clente(i+1 + "" , p);  
                 c.start();
