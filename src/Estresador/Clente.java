@@ -38,9 +38,11 @@ public class Clente extends Thread{
     int puntos = 0;
     LoginPartida Log;
     float promedio;
+    Promedio p;
 
-public Clente(String idJuego) {
+public Clente(String idJuego, Promedio p) {
         this.idJuego = idJuego;
+        this.p = p;
         //this.Log = Log;
     }
 
@@ -88,7 +90,8 @@ public Clente(String idJuego) {
                    // s.close();
                     
                     promedio = tiempo/golpes;
-                    System.out.println(promedio + "\n");
+                    p.actSuma(promedio);
+                    System.out.println(p.getProm()/50); 
                     break;  
                 }else{
                    aux2 = rand.nextInt(3);
@@ -149,7 +152,7 @@ public Clente(String idJuego) {
     public static void main(String[] args) {
         try {
             Clente c;
-            
+            Promedio p = new Promedio();
             Conex con;
             System.setProperty("java.security.policy", "file:/C:/Users/Francisco/Documents/NetBeansProjects/ProyectoAlpha/src/Cliente/client.policy");
             if (System.getSecurityManager() == null) {
@@ -160,9 +163,10 @@ public Clente(String idJuego) {
             LoginPartida Log = (LoginPartida) registry.lookup(name);
             for(int i = 0; i < 50 ; i++){
                 con = Log.Conect(i+1 + "");
-                c = new Clente(i+1 + "");  
+                c = new Clente(i+1 + "" , p);  
                 c.start();
             }
+            System.out.println(p.getProm());   
         } catch (RemoteException ex) {
             Logger.getLogger(Clente.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NotBoundException ex) {
@@ -173,3 +177,22 @@ public Clente(String idJuego) {
     }
     
 }
+
+
+class Promedio {
+    
+    
+    float prom = 0;
+    
+    public synchronized void actSuma(float num){
+        prom = prom + num;
+    }
+
+    public float getProm() {
+        return prom;
+    }
+    
+    
+    
+}
+
