@@ -81,8 +81,9 @@ public class Multicast extends Thread {
                         new DatagramPacket(m, m.length, group, mulPu);
                 //Manda mensajes
                 s.send(messageOut);
+                System.out.println("HOALGOLAGGOLLAGOLA");
                 aux = (rand.nextInt(3) + 3)*100;
-                Thread.sleep(aux);
+                Thread.sleep(800);
             } catch (IOException ex) {
                 Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
             } catch (InterruptedException ex) {

@@ -68,7 +68,8 @@ public class  Partida implements LoginPartida  {
                 }    
             }   
         }
-        return res;
+        //return res;
+        return true;
     }
     
 
