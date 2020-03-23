@@ -5,18 +5,15 @@
  */
 package Estresador;
 
-import Cliente.Juego;
 import Interfaces.Conex;
 import Interfaces.LoginPartida;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import static java.lang.Integer.parseInt;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.Socket;
-import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -38,12 +35,9 @@ public class Clente extends Thread{
     int puntos = 0;
     LoginPartida Log;
     float promedio;
-    Promedio p;
 
-public Clente(String idJuego, Promedio p) {
+public Clente(String idJuego) {
         this.idJuego = idJuego;
-        this.p = p;
-        //this.Log = Log;
     }
 
     public float getPromedio() {
@@ -53,14 +47,10 @@ public Clente(String idJuego, Promedio p) {
     @Override
     public void run(){
         try {
-            //Conectar a multicast
             Random rand = new Random();
             int aux2;
             MulticastSocket s =null;
             InetAddress group = InetAddress.getByName(mulIP);
-            //s = new MulticastSocket(mulPort);
-            //s.joinGroup(group);
-            //varriables dde ruun
             byte[] buffer;
             DatagramPacket monstruo;
             int id;
@@ -68,29 +58,11 @@ public Clente(String idJuego, Promedio p) {
             String puntajes;
             long tiempo = 0;
             int golpes = 0;
-            //while de Muuulticast
             while(true){
                 buffer = new byte[1000];
                 monstruo = new DatagramPacket(buffer, buffer.length);
-//                puntajes = Log.puntaje();
-//                gui.cambiaPuntos(puntajes);
-//                gui.cambiaAvi("Juego!!");
-                //s.receive(monstruo);
-                //id = parseInt(new String(monstruo.getData(), 0, monstruo.getLength()));
-                ///id = 0;
-                //ID cuando alguien gana es 100      
                 if(golpes == 5){
-                    //s.receive(monstruo);
-                    //aux = (new String(monstruo.getData(), 0, monstruo.getLength()));
-//                    gui.ganador(aux);  //escribe quien gano
-//                    gui.setM();  //pone un cuaddrto en verde
-//                    gui.habilitaInicio();
-//                    puntajes = Log.puntaje();
-//                    gui.cambiaPuntos(puntajes);
-                   // s.close();
-                    
                     promedio = tiempo/golpes;
-                    p.actSuma(promedio);
                     System.out.println(promedio); 
                     break;  
                 }else{
@@ -104,14 +76,12 @@ public Clente(String idJuego, Promedio p) {
                 }
                 Thread.sleep(10);
             } 
-            
-            } catch (IOException ex) {
-            Logger.getLogger(Clente.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Clente.class.getName()).log(Level.SEVERE, null, ex);
-        }
-            
-} 
+        } catch (IOException ex) {
+        Logger.getLogger(Clente.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (InterruptedException ex) {
+        Logger.getLogger(Clente.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    } 
     
       
 
@@ -121,18 +91,18 @@ public Clente(String idJuego, Promedio p) {
         Socket s = null;
         long time;
         try {
-            //Aqui iniiciaa coonex con serrv ppparra avisar que tiene un punto
+            
             puntos = puntos +1;
-            //System.out.println("123");
+           
             s = new Socket(tcpIP, tcpPort);
             DataOutputStream out =
                     new DataOutputStream( s.getOutputStream());
             time = System.currentTimeMillis();
             out.writeUTF(idJuego);
-           // System.out.println("1234");
+           
             DataInputStream in = new DataInputStream(s.getInputStream());
             in.readUTF();
-           // System.out.println("12345");
+           
             time = System.currentTimeMillis() - time;
             return time;
         }catch (IOException ex){
@@ -152,7 +122,6 @@ public Clente(String idJuego, Promedio p) {
     public static void main(String[] args) {
         try {
             Clente c;
-            Promedio p = new Promedio();
             Conex con;
             System.setProperty("java.security.policy", "file:/C:/Users/Francisco/Documents/NetBeansProjects/ProyectoAlpha/src/Cliente/client.policy");
             if (System.getSecurityManager() == null) {
@@ -163,10 +132,9 @@ public Clente(String idJuego, Promedio p) {
             LoginPartida Log = (LoginPartida) registry.lookup(name);
             for(int i = 0; i < 500 ; i++){
                 con = Log.Conect(i+1 + "");
-                c = new Clente(i+1 + "" , p);  
+                c = new Clente(i+1 + "" );  
                 c.start();
-            }
-            System.out.println(p.getProm());   
+            }  
         } catch (RemoteException ex) {
             Logger.getLogger(Clente.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NotBoundException ex) {
@@ -177,22 +145,3 @@ public Clente(String idJuego, Promedio p) {
     }
     
 }
-
-
-class Promedio {
-    
-    
-    float prom = 0;
-    
-    public synchronized void actSuma(float num){
-        prom = prom + num;
-    }
-
-    public float getProm() {
-        return prom;
-    }
-    
-    
-    
-}
-

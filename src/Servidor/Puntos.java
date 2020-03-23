@@ -23,8 +23,11 @@ public class Puntos extends Thread  {
     Socket clientSocket;
     DataInputStream in;
     //Esstresaamiieinto
-    DataOutputStream out;
-
+    //DataOutputStream out;
+    //------------------
+    
+    
+    
     //MManejador de los puntoss de los juggadores, actualkiza los puntos de cada
     //uno cuando recive un mensaje por TCP ded cada uno.
     
@@ -36,7 +39,7 @@ public class Puntos extends Thread  {
             this.clientSocket = clientSocket;
             in = new DataInputStream(clientSocket.getInputStream());
             //Esstresaamiieinto
-            out = new DataOutputStream(clientSocket.getOutputStream());
+            //out = new DataOutputStream(clientSocket.getOutputStream());
             //------------------
         } catch (IOException ex) {
             Logger.getLogger(Puntos.class.getName()).log(Level.SEVERE, null, ex);
@@ -69,7 +72,7 @@ public class Puntos extends Thread  {
             System.out.println(id);
             actpuntos(id);
             //Esstresaamiieinto
-            out.writeUTF("a");
+            //out.writeUTF("a");
             //-----------------------
             clientSocket.close();
             //fin tpo

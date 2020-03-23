@@ -87,7 +87,6 @@ public class Administrador {
                         engine.finJuago = false; 
                     }else if(engine.enCurso &&  !engine.finJuago){
                         engine.siguePartida();
-                        System.out.println("3");
                     }else{
                         //Reinicia juego
                         //Tengo que asegurarme de que toddos esten liistos
@@ -103,7 +102,7 @@ public class Administrador {
                             m.start();
                             engine.finJuago = false;
                         }else{
-                            Thread.sleep(200);
+                            Thread.sleep(100);
                         }
                     }
                 }
