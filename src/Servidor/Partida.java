@@ -67,6 +67,9 @@ public class  Partida implements LoginPartida  {
             }   
         }
         return res;
+        //Estresamientto
+        //return true;
+        //-------------
     }
     
 

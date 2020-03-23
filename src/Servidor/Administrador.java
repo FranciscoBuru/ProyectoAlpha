@@ -97,7 +97,7 @@ public class Administrador {
                             m.start();
                             engine.finJuago = false;
                         }else{
-                            Thread.sleep(200);
+                            Thread.sleep(100);
                         }
                     }
                 }
