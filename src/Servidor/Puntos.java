@@ -45,19 +45,20 @@ public class Puntos extends Thread  {
             Logger.getLogger(Puntos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    //Actualiza puntos, si alguno ya tiene 5 entonces hay un ganaddor
-    //y manda a ese ganaddor por Multicast (DDa la ordedn)
+    //Actualiza puntos, si alguno ya tiene 5 entonces hay un ganador
+    //y manda a ese ganaddor por Multicast (Da la orden)
     public synchronized void actpuntos(String nom){
         int puntos;
         int index;
         boolean res = false;
-        index = pa.getIndex(nom);
-        puntos = pa.getPuntos(index);
+        index = pa.getIndex(nom); // el número de casilla del arreglo en el que está ese jugador
+        puntos = pa.getPuntos(index); // actualiza los puntos del jugador y te regresa los nuevos puntos.
         if(puntos == 5){
             res = true; 
             System.out.println(nom);
             adm.ganador(nom);
-            pa.limpiaRonda();
+            pa.limpiaRonda(); // Deja todo listo para el siguiente juego. Se espera a que todos los jugadores
+            // le pongan listo para que empiece la nueva partida.
         }
     }
         

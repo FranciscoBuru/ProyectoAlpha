@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 //Adminiistrador del servidor
 
 public class Administrador {
-    String mulIP = "228.5.6.7";;
+    String mulIP = "228.5.6.7";
     int mulPu = 6791;
     MulticastSocket s =null; 
     InetAddress group;
@@ -54,7 +54,6 @@ public class Administrador {
             m.setAdm(a);
             a.setM(m);
             m.iniciaMulticast();
-            //a.iniciaMulticast();                   //Inicia multicast 
             TCP tcp = new TCP(7899);               //Levanta TCP
             Partida engine = new Partida();        //Levanta Partida
             tcp.setP(engine);                      //sets
@@ -63,7 +62,7 @@ public class Administrador {
             tcp.start();                           //inicia hilo de mensajes TCP
             
             //Levanta rmi, aguas con la liga
-            System.setProperty("java.security.policy", "file:/C:/Users/Francisco/Documents/NetBeansProjects/ProyectoAlpha/src/Servidor/server.policy");
+            System.setProperty("java.security.policy", "file:/C:/Users/Mariella/Documents/ITAM/Semestre 8/Sistemas Distribuidos/ProyectoAlpha/src/Servidor/server.policy");
             if (System.getSecurityManager() == null) {
                 System.setSecurityManager(new SecurityManager());
             }
@@ -73,26 +72,22 @@ public class Administrador {
             Registry registry = LocateRegistry.getRegistry();
             registry.rebind(name,  stub);
             
-            //iiintento de poder iniiciar partiida cuando jugadores le ponen redy
-            //Cuando hace login un usuuario que se habia salido se mandan otros 
-            //5 monstros .. :(
+            // while del administrador. Lo que mantiene al administrador vivo.
             while(true){
-                //revListos() está en Partida.java, noo jala bien
                 if(!engine.revListos()){  
                     Thread.sleep(200);
                 }else{
                     if(!engine.enCurso &&  engine.finJuago){
                         engine.inicioPartida();
-                        m.start();  //manda todos los topos
+                        m.start();  //inicia el hilo de multicast
                         engine.finJuago = false; 
-                    }else if(engine.enCurso &&  !engine.finJuago){
+                    }else if(engine.enCurso &&  !engine.finJuago){ // sucede cuando entra un nuevo jugador
                         engine.siguePartida();
                     }else{
                         //Reinicia juego
-                        //Tengo que asegurarme de que toddos esten liistos
+                        //Tengo que asegurarme de que todos esten listos
                         //antes de iniciar
                         if(engine.revListos()){ 
-                            System.out.println("4");
                             engine.enCurso = false;
                             engine.inicioPartida();
                             m = new Multicast();

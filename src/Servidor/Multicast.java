@@ -24,7 +24,7 @@ public class Multicast extends Thread {
     int mulPu = 6791;
     MulticastSocket s =null; //-----------------------------------------------------------------
     InetAddress group;
-    boolean envTopos = true;
+    boolean envTopos = true; // cuando todos los jugadores ponen start se empiezan a mandar topos
     String ganador;
     Administrador adm;
 
@@ -71,7 +71,7 @@ public class Multicast extends Thread {
         
         while(envTopos){
             try {
-                System.out.println("123");
+                //System.out.println("123");
                 aux = rand.nextInt(11) + 1;
                 
                 String  myMessage= aux + "";
@@ -84,6 +84,7 @@ public class Multicast extends Thread {
                 System.out.println("HOALGOLAGGOLLAGOLA");
                 aux = (rand.nextInt(3) + 3)*100;
                 Thread.sleep(800);
+
             } catch (IOException ex) {
                 Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
             } catch (InterruptedException ex) {
@@ -91,7 +92,7 @@ public class Multicast extends Thread {
             }
     
         }
-        System.out.println("Manddanddo Ganador");  
+        System.out.println("Mandando Ganador");  
         try {
             String  myMessage= "100";
             byte [] m = myMessage.getBytes();

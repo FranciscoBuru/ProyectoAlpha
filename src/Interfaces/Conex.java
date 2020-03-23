@@ -13,7 +13,8 @@ import java.io.Serializable;
  */
 
 
-//Clase usada para regresar los datos de conexiion al jugador
+//Clase usada para regresar los datos de conexion al jugador.
+// El jugador recibe un objeto de clase conexion por el RMI
 public class Conex implements Serializable {
     String idJugador;
     int puntos;
