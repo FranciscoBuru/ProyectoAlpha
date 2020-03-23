@@ -56,8 +56,8 @@ public Clente(String idJuego) {
             int aux2;
             MulticastSocket s =null;
             InetAddress group = InetAddress.getByName(mulIP);
-            s = new MulticastSocket(mulPort);
-            s.joinGroup(group);
+            //s = new MulticastSocket(mulPort);
+            //s.joinGroup(group);
             //varriables dde ruun
             byte[] buffer;
             DatagramPacket monstruo;
@@ -73,25 +73,25 @@ public Clente(String idJuego) {
 //                puntajes = Log.puntaje();
 //                gui.cambiaPuntos(puntajes);
 //                gui.cambiaAvi("Juego!!");
-                s.receive(monstruo);
-                id = parseInt(new String(monstruo.getData(), 0, monstruo.getLength()));
-                
+                //s.receive(monstruo);
+                //id = parseInt(new String(monstruo.getData(), 0, monstruo.getLength()));
+                ///id = 0;
                 //ID cuando alguien gana es 100      
-                if(id == 100){
-                    s.receive(monstruo);
-                    aux = (new String(monstruo.getData(), 0, monstruo.getLength()));
+                if(golpes == 5){
+                    //s.receive(monstruo);
+                    //aux = (new String(monstruo.getData(), 0, monstruo.getLength()));
 //                    gui.ganador(aux);  //escribe quien gano
 //                    gui.setM();  //pone un cuaddrto en verde
 //                    gui.habilitaInicio();
 //                    puntajes = Log.puntaje();
 //                    gui.cambiaPuntos(puntajes);
-                    s.close();
+                   // s.close();
                     
                     promedio = tiempo/golpes;
                     System.out.println(promedio + "\n");
                     break;  
                 }else{
-                   aux2 = rand.nextInt(1);
+                   aux2 = rand.nextInt(3);
                     //System.out.println(aux2);
                     if(aux2 == 0){
                         tiempo = tiempo + this.golpe();
@@ -158,7 +158,7 @@ public Clente(String idJuego) {
             String name = "Login";
             Registry registry = LocateRegistry.getRegistry("localhost");  //Aqui va la IP del servidor
             LoginPartida Log = (LoginPartida) registry.lookup(name);
-            for(int i = 0; i < 26 ; i++){
+            for(int i = 0; i < 50 ; i++){
                 con = Log.Conect(i+1 + "");
                 c = new Clente(i+1 + "");  
                 c.start();
